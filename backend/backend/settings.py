@@ -13,6 +13,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
 ]
+
 CSRF_TRUSTED_ORIGINS = [
     "https://glovalth-healthtech-1.onrender.com",
 ]
@@ -28,9 +29,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
 
-   'accounts',
-'marketing',
-'support',
+    'accounts',
+    'marketing',
+    'support',
 ]
 
 MIDDLEWARE = [
@@ -72,6 +73,7 @@ DATABASES = {
         conn_max_age=600
     )
 }
+
 LANGUAGE_CODE = 'en-gb'
 
 TIME_ZONE = 'UTC'
