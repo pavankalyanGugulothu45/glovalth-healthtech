@@ -1,0 +1,78 @@
+/* Global Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f7fa;
+    margin: 0;
+    padding: 0;
+  }
+  
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    background-color: #4f46e5; /* Indigo */
+    color: white;
+    font-weight: bold;
+    transition: background 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #4338ca; /* Darker Indigo */
+  }
+  
+  input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  
+  h1, h2 {
+    color: #1f2937; /* Dark gray */
+  }
+  
+  p {
+    color: #374151;
+  }
+  
+  /* Card for forms */
+  .auth-card {
+    background: white;
+    padding: 30px 40px;
+    max-width: 400px;
+    margin: 60px auto;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  
+  .auth-card form {
+    margin-top: 20px;
+  }
+  
+  .toggle-btn {
+    background: transparent;
+    color: #4f46e5;
+    font-weight: bold;
+    padding: 0;
+    margin-left: 5px;
+  }
+  
+  .toggle-btn:hover {
+    text-decoration: underline;
+    background: transparent;
+  }
+  
+  .welcome-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+  }
+  

@@ -1,0 +1,64 @@
+.table-box {
+    background: white;
+    padding: 18px;
+    border-radius: 16px;
+    overflow-x: auto;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+  
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1500px;
+  }
+  
+  th {
+    background: #f8f9fb;
+    padding: 12px;
+    text-align: left;
+    font-size: 13px;
+  }
+  
+  td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  
+  tr:hover {
+    background: #fafafa;
+  }
+  
+  .badge {
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  .badge.ok {
+    background: #d4edda;
+    color: #155724;
+  }
+  
+  .badge.warning {
+    background: #fff3cd;
+    color: #856404;
+  }
+  
+  .badge.conflict {
+    background: #f8d7da;
+    color: #721c24;
+  }
+  
+  .actions {
+    font-size: 16px;
+    cursor: pointer;
+  }

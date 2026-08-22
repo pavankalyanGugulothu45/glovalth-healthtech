@@ -1,0 +1,172 @@
+.technical-support-page {
+    display: flex;
+    min-height: 100vh;
+    background: #f5f8f8;
+}
+
+
+/* LEFT SIDEBAR */
+
+.technical-sidebar {
+    width: 260px;
+    min-height: 100vh;
+
+    background: #ffffff;
+
+    border-right: 1px solid #e5e9e9;
+
+    padding: 24px 16px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* TITLE */
+
+.technical-sidebar-title {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 8px 10px 24px;
+
+    border-bottom: 1px solid #edf0f0;
+}
+
+
+.technical-logo {
+    width: 42px;
+    height: 42px;
+
+    background: #e4f7f5;
+
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 20px;
+}
+
+
+.technical-sidebar-title h2 {
+    margin: 0;
+
+    font-size: 17px;
+
+    color: #172033;
+}
+
+
+.technical-sidebar-title p {
+    margin: 4px 0 0;
+
+    color: #8a94a4;
+
+    font-size: 11px;
+}
+
+
+/* NAVIGATION */
+
+.technical-navigation {
+    margin-top: 22px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+.technical-nav {
+    width: 100%;
+
+    border: none;
+
+    background: transparent;
+
+    color: #667085;
+
+    padding: 12px 13px;
+
+    border-radius: 9px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    text-align: left;
+}
+
+
+.technical-nav span {
+    width: 22px;
+
+    text-align: center;
+}
+
+
+.technical-nav:hover {
+    background: #f0f8f7;
+
+    color: #00a99d;
+}
+
+
+.technical-nav.active {
+    background: #e3f7f4;
+
+    color: #00a99d;
+
+    font-weight: 600;
+}
+
+
+/* BACK BUTTON */
+
+.back-main-btn {
+    margin-top: auto;
+
+    border: none;
+
+    background: #f5f7f7;
+
+    color: #667085;
+
+    padding: 11px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 12px;
+}
+
+
+.back-main-btn:hover {
+    background: #e7f5f3;
+
+    color: #00a99d;
+}
+
+
+/* RIGHT SIDE */
+
+.technical-content-area {
+    flex: 1;
+
+    min-height: 100vh;
+
+    background: #f5f8f8;
+}

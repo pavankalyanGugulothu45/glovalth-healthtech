@@ -1,0 +1,55 @@
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:14px;
+    margin:18px 0;
+  }
+  
+  .stat-card{
+    border-radius:16px;
+    padding:16px;
+    text-align:center;
+    box-shadow:0 6px 14px rgba(0,0,0,0.06);
+  }
+  
+  .stat-icon{
+    font-size:24px;
+    margin-bottom:8px;
+  }
+  
+  .stat-number{
+    font-size:24px;
+    font-weight:700;
+  }
+  
+  .stat-title{
+    font-size:13px;
+    margin-top:6px;
+    color:#444;
+  }
+  
+  /* GOOD COLOURS */
+  .total{
+    background:#dff4ff;
+    color:#0d6efd;
+  }
+  
+  .ok{
+    background:#e7f8ee;
+    color:#198754;
+  }
+  
+  .warning{
+    background:#fff4d6;
+    color:#f59e0b;
+  }
+  
+  .conflict{
+    background:#ffe5e5;
+    color:#dc3545;
+  }
+  
+  .hours{
+    background:#eee5ff;
+    color:#7c3aed;
+  }

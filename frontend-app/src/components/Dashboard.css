@@ -1,0 +1,80 @@
+.dashboard-wrap {
+  min-height: 100vh;
+  background: #ddffda;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #3f6432;
+  color: white;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand-title {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.top-right {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.top-btn {
+  background: #eaffea;
+  color: #2e3434;
+  border: none;
+  padding: 9px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.top-btn:hover {
+  background: #c7f0c7;
+}
+
+.top-btn.danger {
+  background: #2e3434;
+  color: white;
+}
+
+.top-btn.danger:hover {
+  opacity: 0.9;
+}
+
+.dashboard-body {
+  padding: 30px;
+}
+.rota-container {
+  padding: 20px;
+  background: #f5f7f9;
+}
+
+.dash-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.dash-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+@media (max-width: 900px) {
+  .dash-cards {
+    grid-template-columns: 1fr;
+  }
+}

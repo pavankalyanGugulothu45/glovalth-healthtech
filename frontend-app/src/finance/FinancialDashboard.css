@@ -1,0 +1,240 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+  }
+  
+  .finance-layout{
+    display:flex;
+    min-height:100vh;
+    background:#f5f7fb;
+  }
+  
+  .finance-sidebar{
+    width:260px;
+    background:#ffffff;
+    padding:25px;
+    border-right:1px solid #e5e7eb;
+  }
+  
+  .finance-sidebar h3{
+    margin-bottom:20px;
+    color:#64748b;
+  }
+  
+  .finance-sidebar button{
+    display:block;
+    width:100%;
+    text-align:left;
+    padding:14px;
+    margin-bottom:10px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    background:#f8fafc;
+  }
+  
+  .finance-active{
+    background:#14b8a6 !important;
+    color:white;
+  }
+  
+  .finance-content{
+    flex:1;
+    padding:30px;
+  }
+  
+  .finance-header{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    margin-bottom:25px;
+  }
+  
+  .export-btn{
+    margin-top:15px;
+    padding:12px 18px;
+    border:none;
+    border-radius:10px;
+    background:#14b8a6;
+    color:white;
+  }
+  
+  .kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+  }
+  
+  .kpi-card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 2px 10px rgba(0,0,0,.05);
+  }
+  
+  .kpi-card h2{
+    margin:10px 0;
+  }
+  .chart-row{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:20px;
+    margin-top:25px;
+  }
+  
+  .chart-card{
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,.05);
+  }
+  
+  .chart-placeholder{
+    height:250px;
+    margin-top:15px;
+    border-radius:15px;
+    background:#eef5ff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#2563eb;
+    font-weight:600;
+  }
+  
+  .donut-chart{
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    margin:20px auto;
+    background:
+      conic-gradient(
+        #2563eb 0 45%,
+        #60a5fa 45% 80%,
+        #bfdbfe 80% 100%
+      );
+  
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  
+    color:white;
+    font-size:30px;
+    font-weight:700;
+  }
+  
+  .bottom-row{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:20px;
+    margin-top:25px;
+  }
+  
+  .invoice-card,
+  .renewals-card{
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,.05);
+  }
+  
+  .invoice-item{
+    padding:15px;
+    border-bottom:1px solid #eee;
+  }
+  
+  .renewal-item{
+    background:#fff7e6;
+    padding:14px;
+    border-radius:10px;
+    margin-bottom:10px;
+  }
+  
+  .subscription-card{
+    margin-top:25px;
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,.05);
+  }
+  
+  .growth-placeholder{
+    height:250px;
+    background:#f3e8ff;
+    border-radius:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#7c3aed;
+    font-weight:600;
+  }
+
+.section-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.view-btn{
+  border:none;
+  background:#f3f4f6;
+  padding:8px 14px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.invoice-box{
+  background:#ffffff;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:18px;
+  margin-bottom:14px;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  transition:.3s;
+}
+
+.invoice-box:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.invoice-box h4{
+  margin:0 0 6px;
+  font-size:15px;
+}
+
+.invoice-box p{
+  margin:0;
+  color:#6b7280;
+  font-size:14px;
+}
+
+.invoice-box span{
+  font-size:24px;
+  font-weight:700;
+  color:#111827;
+}
+
+.renewal-item{
+  background:#fff8e6;
+  border:1px solid #fde68a;
+  border-radius:14px;
+  padding:18px;
+  margin-bottom:14px;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.renewal-item span{
+  font-weight:700;
+  font-size:18px;
+}
