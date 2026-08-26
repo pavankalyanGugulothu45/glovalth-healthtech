@@ -12,7 +12,7 @@ function MarketingLeads({ setPage }) {
       
       const fetchLeads = async () => {
         const response = await fetch(
-          "http://127.0.0.1:8000/api/marketing/leads/"
+          "https://glovalth-healthtech-1.onrender.com/api/marketing/leads/"
         );
       
         const data = await response.json();
@@ -105,7 +105,7 @@ Cancel
   onClick={async () => {
 
     const response = await fetch(
-      "http://127.0.0.1:8000/api/marketing/add-lead/",
+      "https://glovalth-healthtech-1.onrender.com/api/marketing/add-lead/",
       {
         method: "POST",
         headers: {

@@ -21,3 +21,4 @@ function Welcome({ onGo }) {
 }
 
 export default Welcome;
+

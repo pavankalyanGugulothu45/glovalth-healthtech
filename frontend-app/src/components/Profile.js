@@ -25,3 +25,4 @@ function Profile({ user, onBack }) {
 }
 
 export default Profile;
+

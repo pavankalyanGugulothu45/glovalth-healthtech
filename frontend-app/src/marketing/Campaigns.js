@@ -21,7 +21,7 @@ useEffect(() => {
 
 const fetchCampaigns = async () => {
   const response = await fetch(
-    "http://127.0.0.1:8000/api/marketing/campaigns/"
+    "https://glovalth-healthtech-1.onrender.com/api/marketing/campaigns/"
   );
 
   const data = await response.json();
@@ -292,7 +292,7 @@ const fetchCampaigns = async () => {
       if (!window.confirm("Delete this campaign?")) return;
 
       await fetch(
-        `http://127.0.0.1:8000/api/marketing/delete-campaign/${campaign.id}/`,
+        `https://glovalth-healthtech-1.onrender.com/api/marketing/delete-campaign/${campaign.id}/`,
         {
           method: "DELETE",
         }
@@ -375,8 +375,8 @@ const fetchCampaigns = async () => {
   onClick={async () => {
 
     const url = isEditing
-      ? `http://127.0.0.1:8000/api/marketing/update-campaign/${editingId}/`
-      : "http://127.0.0.1:8000/api/marketing/add-campaign/";
+      ? `https://glovalth-healthtech-1.onrender.com/api/marketing/update-campaign/${editingId}/`
+      : "https://glovalth-healthtech-1.onrender.com/api/marketing/add-campaign/";
 
     const method = isEditing ? "PUT" : "POST";
 

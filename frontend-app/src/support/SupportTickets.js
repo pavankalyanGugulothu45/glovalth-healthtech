@@ -16,7 +16,7 @@ function SupportTickets({ setPage }) {
 
   // LOAD TICKETS FROM DJANGO DATABASE
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/support/tickets/")
+    fetch("https://glovalth-healthtech-1.onrender.com/api/support/tickets/")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to load tickets");
@@ -52,7 +52,7 @@ function SupportTickets({ setPage }) {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/support/tickets/create/",
+        "https://glovalth-healthtech-1.onrender.com/api/support/tickets/create/",
         {
           method: "POST",
           headers: {

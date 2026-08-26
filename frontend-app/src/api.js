@@ -1,4 +1,4 @@
-const BASE = "http://127.0.0.1:8000/api";
+const BASE = "https://glovalth-healthtech-1.onrender.com/api";
 
 export async function apiGet(path) {
   const res = await fetch(`${BASE}${path}`);
@@ -17,3 +17,4 @@ export async function apiPost(path, body) {
   if (!res.ok) throw new Error(data.error || "Request failed");
   return data;
 }
+
