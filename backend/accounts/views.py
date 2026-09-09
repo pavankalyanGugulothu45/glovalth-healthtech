@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from django.core.mail import send_mail
 from django.conf import settings
 from django.db import transaction
 from django.utils.crypto import get_random_string
@@ -8,10 +7,9 @@ from django.utils.crypto import get_random_string
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+import resend
 
-# ==========================================
-# GENERATE STAFF ID
-# ==========================================
+
 def generate_staff_id():
     """
     Generates a unique Staff ID such as:
@@ -28,9 +26,6 @@ def generate_staff_id():
             return staff_id
 
 
-# ==========================================
-# REGISTER STAFF
-# ==========================================
 @api_view(['POST'])
 def register(request):
 
@@ -41,9 +36,6 @@ def register(request):
         email = request.data.get('email')
         password = request.data.get('password')
 
-        # ------------------------------
-        # VALIDATION
-        # ------------------------------
         if not staff_name:
             return Response(
                 {'error': 'Staff name is required'},
@@ -68,23 +60,14 @@ def register(request):
                 status=400
             )
 
-        # ------------------------------
-        # CHECK EMAIL
-        # ------------------------------
         if User.objects.filter(email=email).exists():
             return Response(
                 {'error': 'An account with this email already exists'},
                 status=400
             )
 
-        # ------------------------------
-        # GENERATE STAFF ID
-        # ------------------------------
         staff_id = generate_staff_id()
 
-        # ------------------------------
-        # CREATE USER
-        # ------------------------------
         with transaction.atomic():
 
             user = User.objects.create_user(
@@ -94,32 +77,44 @@ def register(request):
                 first_name=staff_name
             )
 
-            # ------------------------------
-            # SEND STAFF ID BY EMAIL
-            # ------------------------------
-            send_mail(
-                subject='Your Glovalth Health Tech Staff ID',
-                message=f"""
-Hello {staff_name},
+            # Send Staff ID using Resend API
+            resend.api_key = settings.RESEND_API_KEY
 
-Your Glovalth Health Tech Care Ltd staff account has been successfully created.
+            resend.Emails.send({
+                "from": settings.DEFAULT_FROM_EMAIL,
+                "to": [email],
+                "subject": "Your Glovalth Health Tech Staff ID",
+                "html": f"""
+                    <h2>Glovalth Health Tech Care Ltd</h2>
 
-Your Staff ID is:
+                    <p>Hello {staff_name},</p>
 
-{staff_id}
+                    <p>
+                        Your Glovalth Health Tech Care Ltd staff account
+                        has been successfully created.
+                    </p>
 
-You can use this Staff ID and the password you created to log in to the Glovalth Health Tech dashboard.
+                    <p><strong>Your Staff ID:</strong></p>
 
-Please keep your Staff ID safe and do not share your password with anyone.
+                    <h2>{staff_id}</h2>
 
-Regards,
+                    <p>
+                        You can use this Staff ID and the password you
+                        created to log in to the Glovalth Health Tech
+                        dashboard.
+                    </p>
 
-Glovalth Health Tech Care Ltd
-                """,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[email],
-                fail_silently=False,
-            )
+                    <p>
+                        Please keep your Staff ID safe and do not share
+                        your password with anyone.
+                    </p>
+
+                    <p>
+                        Regards,<br>
+                        Glovalth Health Tech Care Ltd
+                    </p>
+                """
+            })
 
         return Response({
             'message': 'Staff account created successfully',
@@ -139,9 +134,6 @@ Glovalth Health Tech Care Ltd
         )
 
 
-# ==========================================
-# LOGIN
-# ==========================================
 @api_view(['POST'])
 def login_view(request):
 
@@ -171,9 +163,6 @@ def login_view(request):
     }, status=400)
 
 
-# ==========================================
-# RESET PASSWORD
-# ==========================================
 @api_view(['POST'])
 def reset_password(request):
 
@@ -210,9 +199,6 @@ def reset_password(request):
         }, status=404)
 
 
-# ==========================================
-# STAFF LIST
-# ==========================================
 @api_view(['GET'])
 def staff_list(request):
 
