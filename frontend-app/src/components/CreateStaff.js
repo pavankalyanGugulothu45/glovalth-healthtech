@@ -1,152 +1,87 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./Login.css";
 import { apiPost } from "../api";
 
 function CreateStaff({ onBack }) {
 
   const [staffName, setStaffName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
   const [staffId, setStaffId] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // UNIQUE STAFF ID GENERATOR
-  const generateStaffId = (name) => {
-
-    const parts =
-      name.trim().toLowerCase().split(" ");
-
-    if (parts.length < 2) return "";
-
-    const firstInitial = parts[0][0];
-
-    const lastName =
-      parts[parts.length - 1];
-
-    const random =
-      Math.floor(100 + Math.random() * 900);
-
-    return `${firstInitial}${lastName}${random}-GLV`;
-  };
-
-  // AUTO GENERATE STAFF ID
-  useEffect(() => {
-
-    if (staffName.trim()) {
-
-      setStaffId(
-        generateStaffId(staffName)
-      );
-
-    } else {
-
-      setStaffId("");
-
-    }
-
-  }, [staffName]);
-
+  // ==========================================
   // CREATE STAFF
+  // ==========================================
   const handleCreate = async (e) => {
 
     e.preventDefault();
 
     setMessage("");
+    setStaffId("");
 
-    // PASSWORD VALIDATION
+    // PASSWORD CHECK
     if (password !== confirmPassword) {
-
-      setMessage(
-        "❌ Passwords do not match"
-      );
-
+      setMessage("❌ Passwords do not match");
       return;
     }
 
-    // NAME VALIDATION
-    if (!staffId) {
-
+    // PASSWORD LENGTH
+    if (password.length < 8) {
       setMessage(
-        "❌ Please enter full name (First & Last)"
+        "❌ Password must be at least 8 characters"
       );
-
       return;
     }
 
-    // CHECK LOCAL DUPLICATE
-    const existingUsers =
-      JSON.parse(
-        localStorage.getItem("staffAccounts")
-      ) || [];
+    setLoading(true);
 
-    const alreadyExists =
-      existingUsers.some(
-        (u) => u.staffId === staffId
-      );
-
-    if (alreadyExists) {
-
-      setMessage(
-        "❌ Staff already exists locally"
-      );
-
-      return;
-    }
-
-    // SAVE USER LOCALLY FIRST
-    existingUsers.push({
-      staffId: staffId,
-      staffName: staffName,
-      password: password,
-    });
-
-    localStorage.setItem(
-      "staffAccounts",
-      JSON.stringify(existingUsers)
-    );
-
-    // TRY DJANGO BACKEND
     try {
 
-      await apiPost("/register/", {
+      // SEND STAFF DETAILS TO DJANGO
+      const response = await apiPost("/accounts/register/", {
 
-        username:
-          `${staffId}@glovalth.com`,
-
-        email:
-          `${staffId}@glovalth.com`,
-
+        staffName: staffName,
+        email: email,
         password: password,
 
       });
 
+      console.log("REGISTER RESPONSE:", response);
+
+      // GET GENERATED STAFF ID
+      setStaffId(response.staff_id);
+
       setMessage(
-        "✅ Staff created successfully"
+        "✅ Staff account created successfully! Your Staff ID has been sent to your email."
       );
+
+      // CLEAR FORM
+      setStaffName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
 
     } catch (err) {
 
       console.error(
-        "FULL ERROR:",
+        "CREATE STAFF ERROR:",
         err
       );
 
-      console.log(
-        "BACKEND RESPONSE:",
-        err.response?.data
-      );
-
-      // STILL SUCCESS LOCALLY
       setMessage(
-        "✅ Staff saved locally (Backend pending)"
+        err?.message ||
+        "❌ Unable to create staff account. Please try again."
       );
-    }
 
-    // RESET FORM
-    setStaffName("");
-    setPassword("");
-    setConfirmPassword("");
-    setStaffId("");
+    } finally {
+
+      setLoading(false);
+
+    }
   };
 
   return (
@@ -157,13 +92,25 @@ function CreateStaff({ onBack }) {
 
         <h2>Create Staff ID</h2>
 
+        <p
+          style={{
+            textAlign: "center",
+            color: "#aaa",
+            marginBottom: "20px",
+          }}
+        >
+          Create your Glovalth Health Tech staff account
+        </p>
+
         <form onSubmit={handleCreate}>
+
+          {/* STAFF NAME */}
 
           <label>Staff Name</label>
 
           <input
             type="text"
-            placeholder="Enter Full Name (First Last)"
+            placeholder="Enter Full Name"
             value={staffName}
             onChange={(e) =>
               setStaffName(e.target.value)
@@ -171,26 +118,21 @@ function CreateStaff({ onBack }) {
             required
           />
 
-          {/* GENERATED STAFF ID */}
+          {/* EMAIL */}
 
-          {staffId && (
+          <label>Email Address</label>
 
-            <p
-              style={{
-                marginTop: "8px",
-                color: "#4FAF53",
-                fontWeight: "bold",
-                fontSize: "14px",
-              }}
-            >
+          <input
+            type="email"
+            placeholder="Enter Email Address"
+            value={email}
+            onChange={(e) =>
+              setEmail(e.target.value)
+            }
+            required
+          />
 
-              Generated Staff ID:
-              {" "}
-              {staffId}
-
-            </p>
-
-          )}
+          {/* PASSWORD */}
 
           <label>Password</label>
 
@@ -201,8 +143,11 @@ function CreateStaff({ onBack }) {
             onChange={(e) =>
               setPassword(e.target.value)
             }
+            minLength="8"
             required
           />
+
+          {/* CONFIRM PASSWORD */}
 
           <label>Confirm Password</label>
 
@@ -213,11 +158,17 @@ function CreateStaff({ onBack }) {
             onChange={(e) =>
               setConfirmPassword(e.target.value)
             }
+            minLength="8"
             required
           />
 
-          <button type="submit">
-            Confirm
+          {/* CREATE BUTTON */}
+
+          <button
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? "Creating..." : "Confirm"}
           </button>
 
         </form>
@@ -229,18 +180,69 @@ function CreateStaff({ onBack }) {
           <p
             style={{
               textAlign: "center",
-              marginTop: "12px",
+              marginTop: "15px",
               fontWeight: "600",
+              lineHeight: "1.5",
+              color: message.startsWith("✅")
+                ? "#4FAF53"
+                : "#ff6b6b",
             }}
           >
-
             {message}
-
           </p>
 
         )}
 
+        {/* GENERATED STAFF ID */}
+
+        {staffId && (
+
+          <div
+            style={{
+              marginTop: "15px",
+              padding: "15px",
+              borderRadius: "8px",
+              background: "rgba(255,255,255,0.08)",
+              textAlign: "center",
+            }}
+          >
+
+            <p
+              style={{
+                margin: "0 0 8px",
+                color: "#aaa",
+              }}
+            >
+              Your Staff ID
+            </p>
+
+            <strong
+              style={{
+                fontSize: "22px",
+                letterSpacing: "2px",
+              }}
+            >
+              {staffId}
+            </strong>
+
+            <p
+              style={{
+                marginTop: "10px",
+                fontSize: "13px",
+                color: "#aaa",
+              }}
+            >
+              Please check your email for your Staff ID.
+            </p>
+
+          </div>
+
+        )}
+
+        {/* BACK TO LOGIN */}
+
         <button
+          type="button"
           className="forgot-link"
           onClick={onBack}
         >

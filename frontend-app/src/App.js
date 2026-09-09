@@ -187,7 +187,7 @@ if (page === "plans") {
 }
   // ✅ STAFF LIST
   if (page === "staffList") {
-    return (
+    return ( 
       <StaffList
         user={loggedUser}
         onBack={() => setPage("dashboard")}
