@@ -8,6 +8,10 @@ function Login({ onLogin, onForgot, onCreateStaff }) {
 
   const submit = (e) => {
     e.preventDefault();
+  
+    console.log("LOGIN BUTTON CLICKED");
+    console.log("STAFF ID:", staffId);
+  
     onLogin(staffId, password);
   };
 

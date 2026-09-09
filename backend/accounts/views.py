@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.conf import settings
+from django.core.cache import cache
 from django.db import transaction
 from django.utils.crypto import get_random_string
 
@@ -77,7 +78,6 @@ def register(request):
                 first_name=staff_name
             )
 
-            # Send Staff ID using Resend API
             resend.api_key = settings.RESEND_API_KEY
 
             resend.Emails.send({
@@ -163,40 +163,178 @@ def login_view(request):
     }, status=400)
 
 
+# =========================================================
+# 🔐 PASSWORD RESET — STEP 1
+# Send verification code to registered email
+# =========================================================
+
 @api_view(['POST'])
-def reset_password(request):
+def request_password_reset(request):
 
     username = request.data.get('username')
-    new_password = request.data.get('new_password')
 
-    if not username or not new_password:
+    if not username:
         return Response(
-            {'error': 'Staff ID and new password are required'},
+            {'error': 'Staff ID is required'},
             status=400
         )
 
     try:
-
         user = User.objects.get(username=username)
 
-        if len(new_password) < 8:
-            return Response(
-                {'error': 'Password must be at least 8 characters'},
-                status=400
-            )
+    except User.DoesNotExist:
+        return Response(
+            {'error': 'Staff ID not found'},
+            status=404
+        )
 
-        user.set_password(new_password)
-        user.save()
+    if not user.email:
+        return Response(
+            {'error': 'No email address is associated with this account'},
+            status=400
+        )
 
-        return Response({
-            'message': 'Password reset successful'
+    # Generate 6-digit verification code
+    verification_code = get_random_string(
+        length=6,
+        allowed_chars="0123456789"
+    )
+
+    # Store code for 10 minutes
+    cache.set(
+        f"password_reset_{username}",
+        verification_code,
+        timeout=600
+    )
+
+    try:
+        resend.api_key = settings.RESEND_API_KEY
+
+        resend.Emails.send({
+            "from": settings.DEFAULT_FROM_EMAIL,
+            "to": [user.email],
+            "subject": "Glovalth Health Tech Password Reset Code",
+            "html": f"""
+                <h2>Glovalth Health Tech Care Ltd</h2>
+
+                <p>Hello {user.first_name},</p>
+
+                <p>
+                    We received a request to reset the password
+                    for your staff account.
+                </p>
+
+                <p>Your verification code is:</p>
+
+                <h1>{verification_code}</h1>
+
+                <p>
+                    This code will expire in 10 minutes.
+                </p>
+
+                <p>
+                    If you did not request a password reset,
+                    please ignore this email.
+                </p>
+
+                <p>
+                    Regards,<br>
+                    Glovalth Health Tech Care Ltd
+                </p>
+            """
         })
 
-    except User.DoesNotExist:
-
         return Response({
-            'error': 'Staff ID not found'
-        }, status=404)
+            'message': 'Verification code sent to your registered email'
+        })
+
+    except Exception as e:
+
+        print("PASSWORD RESET EMAIL ERROR:", str(e))
+
+        return Response(
+            {
+                'error': 'Unable to send verification email'
+            },
+            status=500
+        )
+
+
+# =========================================================
+# 🔐 PASSWORD RESET — STEP 2
+# Verify code and change password
+# =========================================================
+
+@api_view(['POST'])
+def verify_password_reset(request):
+
+    username = request.data.get('username')
+    verification_code = request.data.get('verification_code')
+    new_password = request.data.get('new_password')
+
+    if not username:
+        return Response(
+            {'error': 'Staff ID is required'},
+            status=400
+        )
+
+    if not verification_code:
+        return Response(
+            {'error': 'Verification code is required'},
+            status=400
+        )
+
+    if not new_password:
+        return Response(
+            {'error': 'New password is required'},
+            status=400
+        )
+
+    if len(new_password) < 8:
+        return Response(
+            {'error': 'Password must be at least 8 characters'},
+            status=400
+        )
+
+    try:
+        user = User.objects.get(username=username)
+
+    except User.DoesNotExist:
+        return Response(
+            {'error': 'Staff ID not found'},
+            status=404
+        )
+
+    stored_code = cache.get(
+        f"password_reset_{username}"
+    )
+
+    if not stored_code:
+        return Response(
+            {
+                'error':
+                'Verification code expired. Please request a new code.'
+            },
+            status=400
+        )
+
+    if verification_code != stored_code:
+        return Response(
+            {'error': 'Invalid verification code'},
+            status=400
+        )
+
+    user.set_password(new_password)
+    user.save()
+
+    # Delete code so it cannot be reused
+    cache.delete(
+        f"password_reset_{username}"
+    )
+
+    return Response({
+        'message': 'Password reset successful'
+    })
 
 
 @api_view(['GET'])
