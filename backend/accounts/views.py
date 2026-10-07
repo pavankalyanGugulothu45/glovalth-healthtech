@@ -134,33 +134,56 @@ def register(request):
         )
 
 
+# =========================================================
+# LOGIN
+# =========================================================
+
 @api_view(['POST'])
 def login_view(request):
 
-    username = request.data.get('username')
-    password = request.data.get('password')
+    try:
+        username = request.data.get('username')
+        password = request.data.get('password')
 
-    if not username or not password:
-        return Response(
-            {'error': 'Staff ID and password are required'},
-            status=400
+        print("LOGIN REQUEST FOR STAFF ID:", username)
+
+        if not username or not password:
+            return Response(
+                {
+                    'error': 'Staff ID and password are required'
+                },
+                status=400
+            )
+
+        user = authenticate(
+            username=username,
+            password=password
         )
 
-    user = authenticate(
-        username=username,
-        password=password
-    )
+        print("AUTHENTICATE RESULT:", user)
 
-    if user:
+        if user:
+            return Response({
+                'message': 'Login successful',
+                'staff_id': user.username,
+                'staff_name': user.first_name
+            })
+
         return Response({
-            'message': 'Login successful',
-            'staff_id': user.username,
-            'staff_name': user.first_name
-        })
+            'error': 'Invalid Staff ID or password'
+        }, status=400)
 
-    return Response({
-        'error': 'Invalid Staff ID or password'
-    }, status=400)
+    except Exception as e:
+
+        print("LOGIN ERROR:", repr(e))
+
+        return Response(
+            {
+                'error': 'Login server error',
+                'details': str(e)
+            },
+            status=500
+        )
 
 
 # =========================================================
@@ -190,7 +213,10 @@ def request_password_reset(request):
 
     if not user.email:
         return Response(
-            {'error': 'No email address is associated with this account'},
+            {
+                'error':
+                'No email address is associated with this account'
+            },
             status=400
         )
 
@@ -245,16 +271,21 @@ def request_password_reset(request):
         })
 
         return Response({
-            'message': 'Verification code sent to your registered email'
+            'message':
+            'Verification code sent to your registered email'
         })
 
     except Exception as e:
 
-        print("PASSWORD RESET EMAIL ERROR:", str(e))
+        print(
+            "PASSWORD RESET EMAIL ERROR:",
+            str(e)
+        )
 
         return Response(
             {
-                'error': 'Unable to send verification email'
+                'error':
+                'Unable to send verification email'
             },
             status=500
         )
@@ -269,8 +300,12 @@ def request_password_reset(request):
 def verify_password_reset(request):
 
     username = request.data.get('username')
-    verification_code = request.data.get('verification_code')
-    new_password = request.data.get('new_password')
+    verification_code = request.data.get(
+        'verification_code'
+    )
+    new_password = request.data.get(
+        'new_password'
+    )
 
     if not username:
         return Response(
@@ -280,28 +315,42 @@ def verify_password_reset(request):
 
     if not verification_code:
         return Response(
-            {'error': 'Verification code is required'},
+            {
+                'error':
+                'Verification code is required'
+            },
             status=400
         )
 
     if not new_password:
         return Response(
-            {'error': 'New password is required'},
+            {
+                'error':
+                'New password is required'
+            },
             status=400
         )
 
     if len(new_password) < 8:
         return Response(
-            {'error': 'Password must be at least 8 characters'},
+            {
+                'error':
+                'Password must be at least 8 characters'
+            },
             status=400
         )
 
     try:
-        user = User.objects.get(username=username)
+        user = User.objects.get(
+            username=username
+        )
 
     except User.DoesNotExist:
         return Response(
-            {'error': 'Staff ID not found'},
+            {
+                'error':
+                'Staff ID not found'
+            },
             status=404
         )
 
@@ -313,14 +362,18 @@ def verify_password_reset(request):
         return Response(
             {
                 'error':
-                'Verification code expired. Please request a new code.'
+                'Verification code expired. '
+                'Please request a new code.'
             },
             status=400
         )
 
     if verification_code != stored_code:
         return Response(
-            {'error': 'Invalid verification code'},
+            {
+                'error':
+                'Invalid verification code'
+            },
             status=400
         )
 
@@ -333,9 +386,14 @@ def verify_password_reset(request):
     )
 
     return Response({
-        'message': 'Password reset successful'
+        'message':
+        'Password reset successful'
     })
 
+
+# =========================================================
+# STAFF LIST
+# =========================================================
 
 @api_view(['GET'])
 def staff_list(request):
