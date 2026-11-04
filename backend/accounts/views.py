@@ -1,3 +1,4 @@
+
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.conf import settings
@@ -7,6 +8,7 @@ from django.utils.crypto import get_random_string
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
 
 import resend
 
@@ -163,10 +165,15 @@ def login_view(request):
         print("AUTHENTICATE RESULT:", user)
 
         if user:
+
+            # Generate or retrieve authentication token
+            token, _ = Token.objects.get_or_create(user=user)
+
             return Response({
                 'message': 'Login successful',
                 'staff_id': user.username,
-                'staff_name': user.first_name
+                'staff_name': user.first_name,
+                'token': token.key
             })
 
         return Response({
@@ -187,7 +194,7 @@ def login_view(request):
 
 
 # =========================================================
-# 🔐 PASSWORD RESET — STEP 1
+# PASSWORD RESET — STEP 1
 # Send verification code to registered email
 # =========================================================
 
@@ -292,7 +299,7 @@ def request_password_reset(request):
 
 
 # =========================================================
-# 🔐 PASSWORD RESET — STEP 2
+# PASSWORD RESET — STEP 2
 # Verify code and change password
 # =========================================================
 

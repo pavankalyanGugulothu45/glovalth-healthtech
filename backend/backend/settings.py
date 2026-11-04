@@ -27,11 +27,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
 
     'accounts',
     'marketing',
     'support',
+    'rota',
 ]
 
 MIDDLEWARE = [
@@ -92,3 +94,8 @@ DEFAULT_FROM_EMAIL = os.environ.get(
 )
 
 RESEND_API_KEY = os.environ.get('RESEND_API_KEY')
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
