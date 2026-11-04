@@ -1,6 +1,7 @@
+
 import "./Topbar.css";
 
-function Topbar() {
+function Topbar({ onAddShift }) {
   return (
     <div className="topbar">
 
@@ -20,21 +21,27 @@ function Topbar() {
       </div>
 
       <div className="topbar-right">
-        <button className="add-btn">
+
+        <button
+          className="add-btn"
+          onClick={onAddShift}
+          type="button"
+        >
           + Add Shift
         </button>
 
-        <button className="auto-btn">
+        <button className="auto-btn" type="button">
           Auto-Generate
         </button>
 
-        <button className="publish-btn">
+        <button className="publish-btn" type="button">
           Publish Rota
         </button>
 
-        <button className="export-btn">
+        <button className="export-btn" type="button">
           Export
         </button>
+
       </div>
 
     </div>

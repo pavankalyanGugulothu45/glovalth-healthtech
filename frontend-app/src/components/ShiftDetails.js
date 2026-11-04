@@ -1,3 +1,4 @@
+
 import "./ShiftDetails.css";
 
 function ShiftDetails({ shift, onClose }) {
@@ -9,10 +10,16 @@ function ShiftDetails({ shift, onClose }) {
         <div className="modal-header">
           <div>
             <h2>📋 Shift Details</h2>
-            <p className="employee-subtitle">{shift.name}</p>
+            <p className="employee-subtitle">
+              {shift.employee_name}
+            </p>
           </div>
 
-          <button className="close-btn" onClick={onClose}>
+          <button
+            className="close-btn"
+            type="button"
+            onClick={onClose}
+          >
             ✖
           </button>
         </div>
@@ -24,7 +31,7 @@ function ShiftDetails({ shift, onClose }) {
           <div className="grid">
             <div>
               <label>Name</label>
-              <p>{shift.name}</p>
+              <p>{shift.employee_name}</p>
             </div>
 
             <div>
@@ -38,8 +45,8 @@ function ShiftDetails({ shift, onClose }) {
             </div>
 
             <div>
-              <label>Employee ID</label>
-              <p>EMP001</p>
+              <label>Shift ID</label>
+              <p>{shift.id}</p>
             </div>
           </div>
         </div>
@@ -56,32 +63,32 @@ function ShiftDetails({ shift, onClose }) {
 
             <div>
               <label>Shift Type</label>
-              <p className="badge orange">{shift.type}</p>
+              <p className="badge orange">{shift.shift_type}</p>
             </div>
 
             <div>
               <label>Start Time</label>
-              <p>{shift.time.split(" - ")[0]}</p>
+              <p>{shift.start_time}</p>
             </div>
 
             <div>
               <label>End Time</label>
-              <p>{shift.time.split(" - ")[1]}</p>
+              <p>{shift.end_time}</p>
             </div>
 
             <div>
               <label>Break Duration</label>
-              <p>{shift.break}</p>
+              <p>{shift.break_minutes} minutes</p>
             </div>
 
             <div>
               <label>Scheduled Hours</label>
-              <p>{shift.hours}</p>
+              <p>{shift.hours} hours</p>
             </div>
 
             <div className="full">
-              <label>Notes</label>
-              <p>Morning medication round</p>
+              <label>Shift Status</label>
+              <p>{shift.status}</p>
             </div>
           </div>
         </div>
@@ -92,48 +99,32 @@ function ShiftDetails({ shift, onClose }) {
 
           <div className="grid">
             <div>
-              <label>Status</label>
-              <p className="badge green-badge">{shift.clock}</p>
+              <label>Clock Status</label>
+              <p className="badge green-badge">
+                {shift.clock_status}
+              </p>
             </div>
 
             <div>
-              <label>Clock In</label>
-              <p>06:58</p>
-            </div>
-
-            <div>
-              <label>Clock In Location</label>
-              <p>{shift.location} - Main Entrance</p>
-            </div>
-
-            <div>
-              <label>Clock Out</label>
-              <p>15:05</p>
+              <label>Timesheet Status</label>
+              <p>{shift.timesheet_status}</p>
             </div>
 
             <div className="full">
-              <label>Clock Out Location</label>
-              <p>{shift.location} - Main Entrance</p>
+              <label>Location</label>
+              <p>{shift.location}</p>
             </div>
           </div>
         </div>
 
         {/* Buttons */}
         <div className="actions-column">
-          <button className="btn teal">
-            📄 View Linked Timesheet
-          </button>
-
-          <button className="btn">
-            ✏️ Edit Shift
-          </button>
-
-          <button className="btn red">
-            🗑 Cancel Shift
-          </button>
-
-          <button className="btn">
-            📑 Duplicate Shift
+          <button
+            className="btn"
+            type="button"
+            onClick={onClose}
+          >
+            Close
           </button>
         </div>
 

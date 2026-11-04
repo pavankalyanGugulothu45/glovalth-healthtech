@@ -1,160 +1,250 @@
+
 import { useState } from "react";
 import "./EditShift.css";
 
-function EditShift({ shift, onClose }) {
+function EditShift({ shift, onClose, onSave }) {
   const [form, setForm] = useState({
-    name: shift?.name || "",
+    employee_name: shift?.employee_name || "",
+    role: shift?.role || "",
     location: shift?.location || "",
-    type: shift?.type || "Morning",
+    shift_type: shift?.shift_type || "Morning",
     date: shift?.date || "",
-    start: shift?.time?.split(" - ")[0] || "",
-    end: shift?.time?.split(" - ")[1] || "",
-    breakTime: shift?.break || "30 min",
-    notes: "",
+    start_time: shift?.start_time || "",
+    end_time: shift?.end_time || "",
+    break_minutes: shift?.break_minutes ?? 30,
+    timesheet_status: shift?.timesheet_status || "Pending",
+    clock_status: shift?.clock_status || "Pending",
+    status: shift?.status || "OK",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const changeValue = (field, value) => {
-    setForm({ ...form, [field]: value });
+    setForm((previous) => ({
+      ...previous,
+      [field]: field === "break_minutes" ? Number(value) : value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (form.start_time === form.end_time) {
+      setError("Start and end times cannot be the same.");
+      return;
+    }
+
+    if (form.break_minutes < 0) {
+      setError("Break cannot be negative.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await onSave(form);
+    } catch (err) {
+      setError(err.message || "Unable to update shift.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="edit-overlay">
       <div className="edit-modal">
 
-        {/* Header */}
         <div className="edit-header">
           <div>
             <h2>Edit Shift</h2>
-            <p>Schedule employee shift</p>
+            <p>Update employee shift details</p>
           </div>
 
-          <button className="close-btn" onClick={onClose}>
+          <button
+            className="close-btn"
+            type="button"
+            onClick={onClose}
+            disabled={loading}
+          >
             ✖
           </button>
         </div>
 
-        {/* Employee */}
-        <div className="form-group">
-          <label>Employee *</label>
-          <input
-            type="text"
-            value={form.name}
-            onChange={(e) =>
-              changeValue("name", e.target.value)
-            }
-          />
-        </div>
+        {error && (
+          <p style={{ color: "red" }}>{error}</p>
+        )}
 
-        {/* Location */}
-        <div className="form-group">
-          <label>Location *</label>
-          <input
-            type="text"
-            value={form.location}
-            onChange={(e) =>
-              changeValue("location", e.target.value)
-            }
-          />
-        </div>
+        <form onSubmit={handleSubmit}>
 
-        {/* Shift Type */}
-        <div className="form-group">
-          <label>Shift Type *</label>
-
-          <div className="type-buttons">
-            {["Morning", "Afternoon", "Night", "On-Call"].map(
-              (item) => (
-                <button
-                  key={item}
-                  className={
-                    form.type === item
-                      ? "type-btn active"
-                      : "type-btn"
-                  }
-                  onClick={() =>
-                    changeValue("type", item)
-                  }
-                >
-                  {item}
-                </button>
-              )
-            )}
-          </div>
-        </div>
-
-        {/* Date */}
-        <div className="form-group">
-          <label>Shift Date *</label>
-          <input
-            type="date"
-            value={form.date}
-            onChange={(e) =>
-              changeValue("date", e.target.value)
-            }
-          />
-        </div>
-
-        {/* Time Row */}
-        <div className="row">
-          <div className="form-group half">
-            <label>Start Time *</label>
+          <div className="form-group">
+            <label>Employee Name *</label>
             <input
-              type="time"
-              value={form.start}
+              type="text"
+              value={form.employee_name}
               onChange={(e) =>
-                changeValue("start", e.target.value)
+                changeValue("employee_name", e.target.value)
               }
+              required
             />
           </div>
 
-          <div className="form-group half">
-            <label>End Time *</label>
+          <div className="form-group">
+            <label>Role *</label>
             <input
-              type="time"
-              value={form.end}
+              type="text"
+              value={form.role}
               onChange={(e) =>
-                changeValue("end", e.target.value)
+                changeValue("role", e.target.value)
               }
+              required
             />
           </div>
-        </div>
 
-        {/* Break */}
-        <div className="form-group">
-          <label>Break Duration (minutes) *</label>
-          <input
-            type="text"
-            value={form.breakTime}
-            onChange={(e) =>
-              changeValue("breakTime", e.target.value)
-            }
-          />
-        </div>
+          <div className="form-group">
+            <label>Location *</label>
+            <input
+              type="text"
+              value={form.location}
+              onChange={(e) =>
+                changeValue("location", e.target.value)
+              }
+              required
+            />
+          </div>
 
-        {/* Notes */}
-        <div className="form-group">
-          <label>Notes (Optional)</label>
-          <textarea
-            rows="4"
-            placeholder="Special instructions, responsibilities, etc."
-            value={form.notes}
-            onChange={(e) =>
-              changeValue("notes", e.target.value)
-            }
-          />
-        </div>
+          <div className="form-group">
+            <label>Shift Type *</label>
+            <select
+              value={form.shift_type}
+              onChange={(e) =>
+                changeValue("shift_type", e.target.value)
+              }
+            >
+              <option value="Morning">Morning</option>
+              <option value="Afternoon">Afternoon</option>
+              <option value="Evening">Evening</option>
+              <option value="Night">Night</option>
+            </select>
+          </div>
 
-        {/* Footer */}
-        <div className="footer-buttons">
-          <button className="cancel-btn" onClick={onClose}>
-            Cancel
-          </button>
+          <div className="form-group">
+            <label>Shift Date *</label>
+            <input
+              type="date"
+              value={form.date}
+              onChange={(e) =>
+                changeValue("date", e.target.value)
+              }
+              required
+            />
+          </div>
 
-          <button className="save-btn">
-            ✔ Save Changes
-          </button>
-        </div>
+          <div className="row">
+            <div className="form-group half">
+              <label>Start Time *</label>
+              <input
+                type="time"
+                value={form.start_time}
+                onChange={(e) =>
+                  changeValue("start_time", e.target.value)
+                }
+                required
+              />
+            </div>
 
+            <div className="form-group half">
+              <label>End Time *</label>
+              <input
+                type="time"
+                value={form.end_time}
+                onChange={(e) =>
+                  changeValue("end_time", e.target.value)
+                }
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>Break Duration (minutes)</label>
+            <input
+              type="number"
+              min="0"
+              value={form.break_minutes}
+              onChange={(e) =>
+                changeValue("break_minutes", e.target.value)
+              }
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Timesheet Status</label>
+            <select
+              value={form.timesheet_status}
+              onChange={(e) =>
+                changeValue("timesheet_status", e.target.value)
+              }
+            >
+              <option value="Pending">Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Approved">Approved</option>
+              <option value="Issue">Issue</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label>Clock Status</label>
+            <select
+              value={form.clock_status}
+              onChange={(e) =>
+                changeValue("clock_status", e.target.value)
+              }
+            >
+              <option value="Pending">Pending</option>
+              <option value="Clocked In">Clocked In</option>
+              <option value="Clocked Out">Clocked Out</option>
+              <option value="Late">Late</option>
+              <option value="No Show">No Show</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label>Shift Status</label>
+            <select
+              value={form.status}
+              onChange={(e) =>
+                changeValue("status", e.target.value)
+              }
+            >
+              <option value="OK">OK</option>
+              <option value="Warning">Warning</option>
+              <option value="Conflict">Conflict</option>
+            </select>
+          </div>
+
+          <div className="footer-buttons">
+            <button
+              type="button"
+              className="cancel-btn"
+              onClick={onClose}
+              disabled={loading}
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              className="save-btn"
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "✔ Save Changes"}
+            </button>
+          </div>
+
+        </form>
       </div>
     </div>
   );

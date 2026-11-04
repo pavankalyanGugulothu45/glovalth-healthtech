@@ -1,25 +1,47 @@
+import { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import StatsCards from "../components/StatsCards";
 import SearchBar from "../components/SearchBar";
 import ShiftTable from "../components/ShiftTable";
+import AddShift from "../components/AddShift";
+
+import { rotaPost } from "../api";
 
 import "./Dashboard.css";
 
 function Dashboard({ setPage }) {
+  const [showAddShift, setShowAddShift] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [message, setMessage] = useState("");
+
+  const handleAddShift = async (shiftData) => {
+    try {
+      await rotaPost("/rota/shifts/", shiftData);
+
+      setMessage("Shift saved successfully!");
+      setRefreshKey((previous) => previous + 1);
+
+    } catch (error) {
+      console.error("ADD SHIFT ERROR:", error);
+
+      throw new Error(
+        error.message || "Unable to save shift."
+      );
+    }
+  };
+
   return (
     <div className="layout">
 
-      {/* SIDEBAR */}
       <Sidebar
-  setPage={setPage}
-  currentPage="rota"
-/>
+        setPage={setPage}
+        currentPage="rota"
+      />
 
-      {/* MAIN CONTENT */}
       <div className="main">
 
-        {/* TOP SECTION */}
+        {/* ROTA HEADER */}
         <div className="rota-header">
 
           <div>
@@ -33,6 +55,7 @@ function Dashboard({ setPage }) {
 
           <button
             className="back-btn"
+            type="button"
             onClick={() => setPage("dashboard")}
           >
             ← Back to Dashboard
@@ -40,14 +63,37 @@ function Dashboard({ setPage }) {
 
         </div>
 
-        {/* ROTA COMPONENTS */}
-        <Topbar />
+        {/* TOPBAR */}
+        <Topbar
+          onAddShift={() => {
+            setMessage("");
+            setShowAddShift(true);
+          }}
+        />
 
+        {/* SUCCESS MESSAGE */}
+        {message && (
+          <p style={{ color: "green", margin: "12px 0" }}>
+            {message}
+          </p>
+        )}
+
+        {/* ROTA STATISTICS */}
         <StatsCards />
 
+        {/* SEARCH */}
         <SearchBar />
 
-        <ShiftTable />
+        {/* SHIFT TABLE */}
+        <ShiftTable refreshKey={refreshKey} />
+
+        {/* ADD SHIFT MODAL */}
+        {showAddShift && (
+          <AddShift
+            onClose={() => setShowAddShift(false)}
+            onSave={handleAddShift}
+          />
+        )}
 
       </div>
 

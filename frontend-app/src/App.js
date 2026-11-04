@@ -1,3 +1,4 @@
+
 import TechDashboard from "./technical/TechDashboard";
 import TechnicalSupportDashboard from "./technical/TechnicalSupportDashboard";
 import TechnicalSupport from "./technical/TechnicalSupport";
@@ -44,13 +45,9 @@ import Notifications from "./components/Notifications";
 import Settings from "./components/Settings";
 import Profile from "./components/Profile";
 
-// ✅ MAIN PROFESSIONAL DASHBOARD
 import MainDashboard from "./pages/MainDashboard";
-
-// ✅ ROTA MANAGEMENT PAGE
 import RotaPage from "./pages/Dashboard";
 
-// ✅ BACKEND API
 import { apiPost } from "./api";
 
 
@@ -59,10 +56,15 @@ function App() {
   const [loggedUser, setLoggedUser] = useState(null);
 
 
-  // 🔑 LOGIN SYSTEM
-  // Login now checks Django/PostgreSQL instead of localStorage
+  // =========================================================
+  // LOGIN SYSTEM
+  // Django authentication + token storage
+  // =========================================================
+
   const handleLogin = async (staffId, password) => {
+
     try {
+
       console.log("LOGIN REQUEST:", {
         username: staffId,
       });
@@ -74,25 +76,40 @@ function App() {
 
       console.log("LOGIN RESPONSE:", response);
 
+      // Check whether the backend returned an authentication token
+      if (!response.token) {
+        throw new Error("Login token was not returned by the server.");
+      }
+
+      // Save authentication token for protected API requests
+      localStorage.setItem("token", response.token);
+
+      // Save logged-in staff information
       setLoggedUser({
         staffId: response.staff_id,
         staffName: response.staff_name,
       });
 
+      // Open main dashboard
       setPage("dashboard");
 
     } catch (err) {
+
       console.error("LOGIN ERROR:", err);
 
       alert(
         err?.message ||
         "Invalid Staff ID or Password"
       );
+
     }
   };
 
 
-  // ✅ WELCOME PAGE
+  // =========================================================
+  // WELCOME PAGE
+  // =========================================================
+
   if (page === "welcome") {
     return (
       <Welcome
@@ -102,7 +119,10 @@ function App() {
   }
 
 
-  // ✅ LOGIN PAGE
+  // =========================================================
+  // LOGIN PAGE
+  // =========================================================
+
   if (page === "login") {
     return (
       <Login
@@ -114,7 +134,10 @@ function App() {
   }
 
 
-  // ✅ CREATE STAFF PAGE
+  // =========================================================
+  // CREATE STAFF PAGE
+  // =========================================================
+
   if (page === "createStaff") {
     return (
       <CreateStaff
@@ -124,7 +147,10 @@ function App() {
   }
 
 
-  // ✅ RESET PASSWORD PAGE
+  // =========================================================
+  // RESET PASSWORD PAGE
+  // =========================================================
+
   if (page === "reset") {
     return (
       <ResetPassword
@@ -134,7 +160,10 @@ function App() {
   }
 
 
-  // ✅ MAIN HEALTHCARE DASHBOARD
+  // =========================================================
+  // MAIN HEALTHCARE DASHBOARD
+  // =========================================================
+
   if (page === "dashboard") {
     return (
       <MainDashboard
@@ -145,7 +174,10 @@ function App() {
   }
 
 
-  // ✅ ROTA MANAGEMENT PAGE
+  // =========================================================
+  // ROTA MANAGEMENT PAGE
+  // =========================================================
+
   if (page === "rota") {
     return (
       <RotaPage
@@ -155,7 +187,10 @@ function App() {
   }
 
 
-  // 💰 FINANCIAL DASHBOARD
+  // =========================================================
+  // FINANCIAL DASHBOARD
+  // =========================================================
+
   if (page === "finance") {
     return (
       <FinancialDashboard
@@ -165,7 +200,6 @@ function App() {
   }
 
 
-  // 💳 SUBSCRIPTIONS
   if (page === "subscriptions") {
     return (
       <Subscriptions
@@ -175,7 +209,6 @@ function App() {
   }
 
 
-  // 🧾 INVOICES
   if (page === "invoices") {
     return (
       <Invoices
@@ -185,7 +218,6 @@ function App() {
   }
 
 
-  // 💰 PAYMENTS
   if (page === "payments") {
     return (
       <Payments
@@ -195,7 +227,6 @@ function App() {
   }
 
 
-  // 📋 PLANS
   if (page === "plans") {
     return (
       <Plans
@@ -205,7 +236,10 @@ function App() {
   }
 
 
-  // 👥 STAFF LIST
+  // =========================================================
+  // STAFF LIST
+  // =========================================================
+
   if (page === "staffList") {
     return (
       <StaffList
@@ -216,7 +250,10 @@ function App() {
   }
 
 
-  // 🔔 NOTIFICATIONS
+  // =========================================================
+  // NOTIFICATIONS
+  // =========================================================
+
   if (page === "notifications") {
     return (
       <Notifications
@@ -226,7 +263,10 @@ function App() {
   }
 
 
-  // ⚙️ SETTINGS
+  // =========================================================
+  // SETTINGS
+  // =========================================================
+
   if (page === "settings") {
     return (
       <Settings
@@ -236,7 +276,10 @@ function App() {
   }
 
 
-  // 👤 PROFILE
+  // =========================================================
+  // PROFILE
+  // =========================================================
+
   if (page === "profile") {
     return (
       <Profile
@@ -247,7 +290,10 @@ function App() {
   }
 
 
-  // 📊 LEAD PIPELINE
+  // =========================================================
+  // MARKETING
+  // =========================================================
+
   if (page === "leadPipeline") {
     return (
       <LeadPipeline
@@ -257,7 +303,6 @@ function App() {
   }
 
 
-  // 📅 DEMO REQUESTS
   if (page === "demoRequests") {
     return (
       <DemoRequests
@@ -267,7 +312,6 @@ function App() {
   }
 
 
-  // 📢 CAMPAIGNS
   if (page === "campaigns") {
     return (
       <Campaigns
@@ -277,7 +321,19 @@ function App() {
   }
 
 
-  // 🛠️ TECHNICAL SUPPORT DASHBOARD
+  if (page === "marketingLeads") {
+    return (
+      <MarketingLeads
+        setPage={setPage}
+      />
+    );
+  }
+
+
+  // =========================================================
+  // TECHNICAL SUPPORT
+  // =========================================================
+
   if (page === "technicalSupport") {
     return (
       <TechnicalSupportDashboard
@@ -288,7 +344,6 @@ function App() {
   }
 
 
-  // 💻 TECHNICAL DASHBOARD
   if (page === "technicalDashboard") {
     return (
       <TechDashboard
@@ -299,17 +354,55 @@ function App() {
   }
 
 
-  // 👥 MARKETING LEADS
-  if (page === "marketingLeads") {
+  if (page === "technicalSupportPage") {
     return (
-      <MarketingLeads
+      <TechnicalSupport
         setPage={setPage}
       />
     );
   }
 
 
-  // 👤 USER MANAGEMENT
+  if (page === "technicalIssues") {
+    return (
+      <TechnicalIssues
+        setPage={setPage}
+      />
+    );
+  }
+
+
+  if (page === "systemMonitoring") {
+    return (
+      <SystemMonitoring
+        setPage={setPage}
+      />
+    );
+  }
+
+
+  if (page === "systemLogs") {
+    return (
+      <SystemLogs
+        setPage={setPage}
+      />
+    );
+  }
+
+
+  if (page === "knowledgeBase") {
+    return (
+      <KnowledgeBase
+        setPage={setPage}
+      />
+    );
+  }
+
+
+  // =========================================================
+  // ADMIN
+  // =========================================================
+
   if (page === "userManagement") {
     return (
       <UserManagement
@@ -319,7 +412,6 @@ function App() {
   }
 
 
-  // 🔐 ROLES & PERMISSIONS
   if (page === "rolesPermissions") {
     return (
       <RolesPermissions
@@ -329,7 +421,6 @@ function App() {
   }
 
 
-  // 📜 AUDIT LOGS
   if (page === "auditLogs") {
     return (
       <AuditLogs
@@ -339,7 +430,6 @@ function App() {
   }
 
 
-  // 🔒 SECURITY SETTINGS
   if (page === "securitySettings") {
     return (
       <SecuritySettings
@@ -349,7 +439,6 @@ function App() {
   }
 
 
-  // ⚙️ ADMIN SETTINGS
   if (page === "adminSettings") {
     return (
       <AdminSettings
@@ -359,7 +448,10 @@ function App() {
   }
 
 
-  // 👥 CUSTOMERS
+  // =========================================================
+  // CUSTOMER SUPPORT
+  // =========================================================
+
   if (page === "customers") {
     return (
       <Customers
@@ -369,7 +461,6 @@ function App() {
   }
 
 
-  // 🎫 SUPPORT TICKETS
   if (page === "supportTickets") {
     return (
       <SupportTickets
@@ -380,7 +471,6 @@ function App() {
   }
 
 
-  // 📁 CASE MANAGEMENT
   if (page === "caseManagement") {
     return (
       <CaseManagement
@@ -390,7 +480,6 @@ function App() {
   }
 
 
-  // 🎓 TRAINING REQUESTS
   if (page === "trainingRequests") {
     return (
       <TrainingRequests
@@ -400,37 +489,10 @@ function App() {
   }
 
 
-  // 🛠️ TECHNICAL ISSUES
-  if (page === "technicalIssues") {
-    return (
-      <TechnicalIssues
-        setPage={setPage}
-      />
-    );
-  }
+  // =========================================================
+  // ANALYTICS
+  // =========================================================
 
-
-  // 📡 SYSTEM MONITORING
-  if (page === "systemMonitoring") {
-    return (
-      <SystemMonitoring
-        setPage={setPage}
-      />
-    );
-  }
-
-
-  // 📜 SYSTEM LOGS
-  if (page === "systemLogs") {
-    return (
-      <SystemLogs
-        setPage={setPage}
-      />
-    );
-  }
-
-
-  // 📈 ANALYTICS
   if (page === "analytics") {
     return (
       <Analytics
@@ -440,30 +502,9 @@ function App() {
   }
 
 
-  // 💬 PRODUCT FEEDBACK
   if (page === "productFeedback") {
     return (
       <ProductFeedback
-        setPage={setPage}
-      />
-    );
-  }
-
-
-  // 📚 KNOWLEDGE BASE
-  if (page === "knowledgeBase") {
-    return (
-      <KnowledgeBase
-        setPage={setPage}
-      />
-    );
-  }
-
-
-  // 🛠️ TECHNICAL SUPPORT
-  if (page === "technicalSupportPage") {
-    return (
-      <TechnicalSupport
         setPage={setPage}
       />
     );
